@@ -12,7 +12,7 @@ import { UsersModule } from './users/users.module';
       host: 'localhost',
       port: 5432,
       username: 'postgres',
-      password: 'postgres',
+      password: 'Maria2.0',
       database: 'curso_ingles',
       entities: [__dirname + '/**/*.entity{.ts,.js}'],
       synchronize: true,

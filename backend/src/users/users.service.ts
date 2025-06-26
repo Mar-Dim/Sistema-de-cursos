@@ -18,4 +18,21 @@ export class UsersService {
   async findOneByEmail(email: string) {
     return this.usersRepository.findOne({ where: { email } });
   }
+
+  async findAll(): Promise<User[]> {
+  return this.usersRepository.find();
+}
+
+async findOne(id: number): Promise<User | null> {
+  return this.usersRepository.findOne({ where: { id } });
+}
+
+async update(id: number, data: Partial<User>) {
+  await this.usersRepository.update(id, data);
+  return this.findOne(id);
+}
+
+async remove(id: number) {
+  return this.usersRepository.delete(id);
+}
 }
