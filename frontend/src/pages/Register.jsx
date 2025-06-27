@@ -1,5 +1,3 @@
-// src/pages/RegisterPage.jsx
-
 import { Link } from 'react-router-dom';
 import '../css/login.css'; // Reutilizamos los mismos estilos
 import RegisterForm from '../components/RegisterForm'; 

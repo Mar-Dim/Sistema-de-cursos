@@ -21,18 +21,33 @@ let AuthService = class AuthService {
         this.usersService = usersService;
         this.jwtService = jwtService;
     }
-    async register({ email, username, password }) {
-        const password_hash = await bcrypt.hash(password, 10);
-        const user = await this.usersService.create({ email, username, password_hash });
-        return this.login({ email, password });
+    async register(dto) {
+        const existing = await this.usersService.findOneByEmail(dto.email);
+        if (existing) {
+            throw new Error('Ya existe un usuario con este email');
+        }
+        const hashedPassword = await bcrypt.hash(dto.password, 10);
+        const user = await this.usersService.create({
+            email: dto.email,
+            username: dto.username,
+            password_hash: hashedPassword,
+        });
+        const payload = { sub: user.id, email: user.email };
+        const token = await this.jwtService.signAsync(payload);
+        return { access_token: token, user };
     }
-    async login({ email, password }) {
-        const user = await this.usersService.findOneByEmail(email);
-        if (!user || !(await bcrypt.compare(password, user.password_hash))) {
-            throw new Error('Credenciales incorrectas');
+    async login(dto) {
+        const user = await this.usersService.findOneByEmail(dto.email);
+        if (!user) {
+            throw new common_1.UnauthorizedException('Credenciales incorrectas');
+        }
+        const isPasswordValid = await bcrypt.compare(dto.password, user.password_hash);
+        if (!isPasswordValid) {
+            throw new common_1.UnauthorizedException('Credenciales incorrectas');
         }
         const payload = { sub: user.id, email: user.email };
-        return { access_token: this.jwtService.sign(payload) };
+        const token = await this.jwtService.signAsync(payload);
+        return { access_token: token, user };
     }
 };
 exports.AuthService = AuthService;

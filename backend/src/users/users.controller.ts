@@ -1,7 +1,6 @@
 import { Controller, Get, Post, Body, Patch, Param, Delete, UseGuards, Request } from '@nestjs/common';
 import { UsersService } from './users.service';
 import { CreateUserDto } from './dto/create-user.dto';
-import { UpdateUserDto } from './dto/update-user.dto';
 import { Auth } from 'src/auth/entities/auth.entity';
 import { AuthGuard } from '@nestjs/passport';
 import { parse } from 'path';
@@ -33,14 +32,6 @@ export class UsersController {
     return this.usersService.findOne(numericId);
   }
 
-  @Patch(':id')
-  update(@Param('id') id: string, @Body() updateUserDto: UpdateUserDto) {
-    const numericId = parseInt(id, 10);
-    if (isNaN(numericId)) {
-      throw new Error('El id debe ser un valor numerico');
-    }
-    return this.usersService.update(numericId, updateUserDto);
-  }
 
   @Delete(':id')
   remove(@Param('id') id: string) {

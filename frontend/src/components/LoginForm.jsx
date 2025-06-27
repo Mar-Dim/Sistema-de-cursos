@@ -21,7 +21,7 @@ export default function LoginForm() {
 
     try {
       const res = await login(email, password);
-      localStorage.setItem('token', res.data.access_token);
+     localStorage.setItem('token', res.data.access_token);
       navigate('/home');
     } catch (err) {
       // Proporciona un mensaje de error más útil
