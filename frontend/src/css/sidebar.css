@@ -1,0 +1,161 @@
+/* src/css/sidebar.css */
+
+/* --- Layout Principal de la Sidebar (Escritorio) --- */
+.sidebar {
+  width: 280px; /* Ancho fijo para la vista de escritorio */
+  flex-shrink: 0; /* Evita que la sidebar se encoja */
+  background-color: var(--white);
+  border-right: 2px solid var(--border-color);
+  padding: 2rem;
+  
+  /* Flexbox para organizar el contenido verticalmente */
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between; /* Empuja el botón de logout hacia abajo */
+  align-items: center;
+  transition: width 0.3s ease, padding 0.3s ease;
+}
+
+/* --- Sección de Información del Usuario --- */
+.user-info {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  width: 100%;
+}
+
+.user-avatar {
+  width: 100px;
+  height: 100px;
+  border-radius: var(--border-radius-circle);
+  background-color: var(--brand-purple);
+  color: var(--white);
+  
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  
+  font-size: 2.5rem;
+  font-weight: 800;
+  margin-bottom: 1rem;
+  
+  /* Sombra sutil para darle profundidad */
+  box-shadow: 0 4px 8px rgba(139, 92, 246, 0.3);
+}
+
+.username {
+  font-size: 1.25rem;
+  font-weight: 800;
+  color: var(--text-primary);
+  word-break: break-all; /* Evita que nombres largos rompan el layout */
+}
+
+/* --- Sección de Estadísticas --- */
+.stats {
+  text-align: center;
+  color: var(--text-secondary);
+  font-weight: 700;
+  width: 100%;
+  padding: 1.5rem 0;
+  border-top: 2px solid var(--border-color);
+  border-bottom: 2px solid var(--border-color);
+  margin: 2rem 0;
+}
+
+.stats p {
+  margin: 0.5rem 0;
+}
+
+/* --- Botón de Cerrar Sesión --- */
+/* Inspirado en .login-button pero con color de "peligro" o "acción destructiva" */
+.logout-button {
+  width: 100%;
+  background-color: var(--error-red);
+  color: var(--white);
+  border: none;
+  padding: 1rem;
+  border-radius: var(--border-radius-input);
+  font-size: 1rem;
+  font-weight: 800;
+  cursor: pointer;
+  text-transform: uppercase;
+  letter-spacing: 0.8px;
+  
+  /* Usamos un rojo más oscuro para la sombra */
+  box-shadow: 0 4px 0 0 #c92424; 
+  transition: transform var(--transition-fast), box-shadow var(--transition-fast);
+}
+
+.logout-button:hover {
+  transform: translateY(-2px);
+}
+
+.logout-button:active {
+  transform: translateY(2px);
+  box-shadow: 0 2px 0 0 #c92424;
+}
+
+/* ========== RESPONSIVE DESIGN ========== */
+
+/* Tablets y Móviles (cuando la sidebar se convierte en header) */
+@media (max-width: 768px) {
+  /* A partir de 768px, la sidebar se convierte en una barra superior horizontal */
+  .sidebar {
+    width: 100%; /* Ocupa todo el ancho */
+    height: auto;
+    flex-direction: row; /* Contenido en horizontal */
+    justify-content: space-between; /* Espacia los elementos */
+    align-items: center;
+    padding: 1rem;
+    border-right: none; /* Quitamos el borde derecho */
+    border-bottom: 2px solid var(--border-color); /* Añadimos un borde inferior */
+    
+    /* Le damos una sombra para que parezca estar "encima" del contenido */
+    box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+  }
+  
+  .user-info {
+    flex-direction: row; /* Avatar y nombre en horizontal */
+    width: auto;
+  }
+  
+  .user-avatar {
+    width: 50px;
+    height: 50px;
+    font-size: 1.25rem;
+    margin-bottom: 0; /* Quitamos el margen inferior */
+    margin-right: 1rem; /* Añadimos margen a la derecha */
+  }
+  
+  .username {
+    font-size: 1rem;
+  }
+
+  .stats {
+    display: none; /* Ocultamos las estadísticas para no sobrecargar la barra superior */
+  }
+  
+  .logout-button {
+    width: auto; /* Ancho automático según el contenido */
+    padding: 0.75rem 1.5rem; /* Ajustamos el padding para que no sea tan grande */
+    font-size: 0.9rem;
+  }
+}
+
+/* Móviles pequeños */
+@media (max-width: 480px) {
+  .sidebar {
+    padding: 0.75rem;
+  }
+  
+  /* Ocultamos el nombre de usuario y dejamos solo el avatar para ahorrar espacio */
+  .username {
+    display: none;
+  }
+  
+  .logout-button {
+    padding: 0.6rem 1rem;
+    font-size: 0.8rem;
+  }
+}

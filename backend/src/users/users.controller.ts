@@ -10,7 +10,7 @@ export class UsersController {
   @UseGuards(AuthGuard('jwt'))
   @Get('profile')
   getProfile(@Request() req) {
-    return req.user;
+    return {email: req.user.email, username: req.user.username };
   }
 
   @Post()

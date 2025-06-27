@@ -46,7 +46,7 @@ export default function RegisterForm() {
       // Esperamos 2 segundos y luego redirigimos
       setTimeout(() => {
         navigate('/login');
-      }, 2000);
+      }, 1500);
 
     } catch (err) {
       // Manejo de errores más específico, común en NestJS

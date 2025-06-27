@@ -1,0 +1,84 @@
+/* Animación fadeInUp que faltaba */
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Modal styles */
+.lesson-modal {
+  position: fixed;
+  inset: 0;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 50;
+}
+
+.modal-overlay {
+  position: absolute;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.5);
+  backdrop-filter: blur(4px);
+}
+
+.modal-content {
+  position: relative;
+  background: var(--white);
+  border-radius: var(--border-radius-card);
+  padding: 2rem;
+  max-width: 480px;
+  width: 90%;
+  z-index: 100;
+  box-shadow: var(--shadow-card);
+  animation: fadeInUp 0.3s var(--transition-smooth) forwards;
+}
+
+.modal-content h3 {
+  font-size: 1.5rem;
+  color: var(--brand-purple);
+  margin-bottom: 1rem;
+}
+
+.modal-content p {
+  font-size: 1rem;
+  color: var(--text-primary);
+  margin-bottom: 1.5rem;
+}
+
+.close-modal {
+  background-color: var(--brand-purple);
+  color: var(--white);
+  border: none;
+  padding: 0.75rem 1.5rem;
+  border-radius: var(--border-radius-input);
+  font-weight: 800;
+  font-size: 1rem;
+  cursor: pointer;
+  transition: transform var(--transition-fast);
+  box-shadow: 0 4px 0 0 var(--brand-purple-dark);
+}
+
+.close-modal:hover {
+  transform: translateY(-2px);
+}
+
+.close-modal:active {
+  transform: translateY(2px);
+  box-shadow: 0 2px 0 0 var(--brand-purple-dark);
+}
+
+/* Opcional: Mejorar la responsividad del modal */
+@media (max-width: 640px) {
+  .modal-content {
+    margin: 1rem;
+    padding: 1.5rem;
+    max-width: none;
+    width: calc(100% - 2rem);
+  }
+}

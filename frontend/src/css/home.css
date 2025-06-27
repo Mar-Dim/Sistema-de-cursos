@@ -1,0 +1,262 @@
+/* home.css */
+
+/* --- Fuentes y Variables Globales (Reutilizadas del CSS de login) --- */
+/* Es buena práctica tener estas variables en un archivo global, 
+   pero las incluyo aquí para que este componente funcione de forma autónoma. */
+@import url('https://fonts.googleapis.com/css2?family=Nunito:wght@700;800&display=swap');
+
+:root {
+  /* Paleta de colores MORADA */
+  --brand-purple: #8B5CF6;
+  --brand-purple-dark: #7C3AED;
+  --brand-purple-light: #C4B5FD;
+  
+  --text-primary: #3c3c3c;
+  --text-secondary: #777777;
+  --background-light: #f7f7f7;
+  --border-color: #e5e5e5;
+  --white: #ffffff;
+  --error-red: #ea2b2b;
+  
+  /* Tipografía */
+  --font-family: 'Nunito', sans-serif;
+  
+  /* Estilos de UI */
+  --border-radius-card: 24px;
+  --border-radius-input: 16px;
+  --border-radius-circle: 50%;
+  --shadow-card: 0 4px 0px 0px #e5e5e5;
+  --shadow-focus: 0 0 0 3px var(--brand-purple-light);
+  
+  /* Transiciones */
+  --transition-fast: 0.2s ease;
+  --transition-smooth: 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+body {
+  font-family: var(--font-family);
+  color: var(--text-primary);
+  margin: 0;
+}
+
+/* --- Layout Principal de Home --- */
+.home-container {
+  display: flex;
+  min-height: 100vh;
+  /* Mantenemos el fondo degradado para consistencia visual */
+  background: linear-gradient(135deg, #d8b4fe 0%, #a5f3fc 100%);
+  overflow: hidden;
+}
+
+/* --- Contenido principal (Árbol de aprendizaje) --- */
+.tree-vertical {
+  flex-grow: 1; /* Ocupa el espacio restante */
+  padding: 2.5rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  overflow-y: auto; /* Permite scroll si hay muchas lecciones */
+}
+
+.tree-title {
+  font-size: 2rem;
+  font-weight: 800;
+  color: var(--text-primary);
+  margin-bottom: 2.5rem;
+  text-align: center;
+  /* Sombra de texto sutil para que resalte sobre el fondo */
+  text-shadow: 0 2px 4px rgba(0,0,0,0.05);
+}
+
+.lesson-path {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+/* --- Wrapper para cada nodo y su conector --- */
+.lesson-wrapper {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+/* --- Conector Vertical entre Lecciones --- */
+.vertical-connector {
+  width: 6px;
+  height: 60px;
+  background-color: var(--brand-purple-light);
+  border-radius: 3px;
+  /* Le damos un aspecto discontinuo como en muchos juegos */
+  background-image: linear-gradient(var(--white) 33%, transparent 33%);
+  background-size: 100% 15px;
+}
+
+/* --- Nodo de Lección (Botón) --- */
+.lesson-node {
+  width: 120px;
+  height: 120px;
+  border-radius: var(--border-radius-circle);
+  border: none;
+  cursor: pointer;
+  
+  /* Estilo del botón inspirado en .login-button */
+  background-color: var(--brand-purple);
+  color: var(--white);
+  box-shadow: 0 8px 0 0 var(--brand-purple-dark);
+  
+  /* Propiedades de texto */
+  font-family: var(--font-family);
+  font-size: 1rem;
+  font-weight: 800;
+  text-align: center;
+  padding: 0.5rem;
+  
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  
+  transition: transform var(--transition-fast), box-shadow var(--transition-fast);
+}
+
+.lesson-node:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 12px 0 0 var(--brand-purple-dark);
+}
+
+.lesson-node:active {
+  transform: translateY(4px);
+  box-shadow: 0 4px 0 0 var(--brand-purple-dark);
+}
+
+.lesson-node:focus-visible {
+  outline: none;
+  box-shadow: 0 8px 0 0 var(--brand-purple-dark), var(--shadow-focus);
+}
+
+/* --- Estilo para Lección Bloqueada --- */
+.lesson-node.locked {
+  background-color: var(--border-color);
+  color: var(--text-secondary);
+  box-shadow: 0 8px 0 0 #b7b7b7;
+  cursor: not-allowed;
+}
+
+.lesson-node.locked:hover,
+.lesson-node.locked:active {
+  transform: translateY(0);
+  box-shadow: 0 8px 0 0 #b7b7b7;
+}
+
+/* --- Estilos para el Modal (Básicos) --- */
+/* Estos estilos aseguran que el modal se vea bien con el resto del diseño */
+.modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.6);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+  backdrop-filter: blur(5px);
+}
+
+.modal-content {
+  background: var(--white);
+  padding: 2rem;
+  border-radius: var(--border-radius-card);
+  box-shadow: 0 10px 25px rgba(0,0,0,0.2);
+  width: 90%;
+  max-width: 600px;
+  position: relative;
+}
+
+.modal-close-button {
+  position: absolute;
+  top: 1rem;
+  right: 1rem;
+  background: none;
+  border: none;
+  font-size: 1.5rem;
+  cursor: pointer;
+  color: var(--text-secondary);
+}
+
+.modal-close-button:hover {
+  color: var(--text-primary);
+}
+
+
+/* ========== RESPONSIVE DESIGN ========== */
+
+/* Tablets */
+@media (max-width: 768px) {
+  .home-container {
+    flex-direction: column;
+  }
+  
+  .tree-vertical {
+    padding: 2rem 1rem;
+  }
+  
+  .tree-title {
+    font-size: 1.75rem;
+    margin-bottom: 2rem;
+  }
+  
+  .lesson-node {
+    width: 100px;
+    height: 100px;
+    font-size: 0.9rem;
+  }
+  
+  .vertical-connector {
+    height: 50px;
+  }
+}
+
+/* Móviles */
+@media (max-width: 480px) {
+  .tree-vertical {
+    padding: 1.5rem 0.5rem;
+  }
+
+  .tree-title {
+    font-size: 1.5rem;
+  }
+  
+  .lesson-node {
+    width: 90px;
+    height: 90px;
+    font-size: 0.8rem;
+    box-shadow: 0 6px 0 0 var(--brand-purple-dark);
+  }
+
+  .lesson-node.locked {
+    box-shadow: 0 6px 0 0 #b7b7b7;
+  }
+  
+  .lesson-node:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 0 0 var(--brand-purple-dark);
+  }
+  
+  .lesson-node:active {
+    transform: translateY(2px);
+    box-shadow: 0 4px 0 0 var(--brand-purple-dark);
+  }
+
+  .vertical-connector {
+    height: 40px;
+    width: 5px;
+  }
+}
