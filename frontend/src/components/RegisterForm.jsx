@@ -1,47 +1,72 @@
-// src/components/RegisterForm.jsx
-
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { User, Mail, Lock } from 'lucide-react'; // Importamos el icono de usuario
+import { User, Mail, Lock } from 'lucide-react';
 import { register } from '../services/authService';
 
 export default function RegisterForm() {
-  const [username, setUsername] = useState('');
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
+  const [formData, setFormData] = useState({
+    username: '',
+    email: '',
+    password: '',
+  });
   
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState('');
+  const [success, setSuccess] = useState(''); // <-- Nuevo estado para mensaje de éxito
   
   const navigate = useNavigate();
+
+  // Un solo manejador para todos los inputs
+  const handleChange = (e) => {
+    setFormData({
+      ...formData,
+      [e.target.id]: e.target.value,
+    });
+  };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     
-    if (password.length < 6) {
+    if (formData.password.length < 6) {
       setError('La contraseña debe tener al menos 6 caracteres.');
       return;
     }
 
     setIsLoading(true);
     setError('');
+    setSuccess('');
 
     try {
-      await register(username, email, password);
-      // Opcional: podrías mostrar un mensaje de éxito antes de redirigir
-      navigate('/login');
+      // Pasamos el objeto formData directamente, que coincide con lo que espera el backend
+      await register(formData);
+      
+      // Mostramos un mensaje de éxito
+      setSuccess('¡Cuenta creada con éxito! Redirigiendo al login...');
+      
+      // Esperamos 2 segundos y luego redirigimos
+      setTimeout(() => {
+        navigate('/login');
+      }, 2000);
+
     } catch (err) {
-      // Un error más específico sería ideal (ej. "El email ya está en uso")
-      setError('No se pudo crear la cuenta. Inténtalo de nuevo.');
+      // Manejo de errores más específico, común en NestJS
+      if (err.response && err.response.data && err.response.data.message) {
+        // NestJS a menudo envía errores en err.response.data.message
+        const errorMessage = err.response.data.message;
+        setError(Array.isArray(errorMessage) ? errorMessage.join(', ') : errorMessage);
+      } else {
+        setError('No se pudo crear la cuenta. Revisa tu conexión.');
+      }
       setIsLoading(false);
     }
   };
 
   return (
+    // Deshabilitamos el formulario entero si hay un éxito para evitar doble envío
     <form onSubmit={handleSubmit} className="login-form">
       {error && <p className="error-message">{error}</p>}
+      {success && <p className="success-message">{success}</p>} {/* Mensaje de éxito */}
       
-      {/* Campo de Nombre de Usuario */}
       <div className="input-group">
         <label htmlFor="username" className="sr-only">Nombre de usuario</label>
         <User className="input-icon" />
@@ -49,15 +74,14 @@ export default function RegisterForm() {
           id="username"
           type="text"
           placeholder="Nombre de usuario"
-          value={username}
-          onChange={(e) => setUsername(e.target.value)}
+          value={formData.username}
+          onChange={handleChange}
           className="form-input"
           required
-          disabled={isLoading}
+          disabled={isLoading || success}
         />
       </div>
 
-      {/* Campo de Email */}
       <div className="input-group">
         <label htmlFor="email" className="sr-only">Correo electrónico</label>
         <Mail className="input-icon" />
@@ -65,15 +89,14 @@ export default function RegisterForm() {
           id="email"
           type="email"
           placeholder="Correo electrónico"
-          value={email}
-          onChange={(e) => setEmail(e.target.value)}
+          value={formData.email}
+          onChange={handleChange}
           className="form-input"
           required
-          disabled={isLoading}
+          disabled={isLoading || success}
         />
       </div>
 
-      {/* Campo de Contraseña (sin el ojo para simplificar, puedes agregarlo si quieres) */}
       <div className="input-group">
         <label htmlFor="password" className="sr-only">Contraseña</label>
         <Lock className="input-icon" />
@@ -81,18 +104,18 @@ export default function RegisterForm() {
           id="password"
           type="password"
           placeholder="Contraseña"
-          value={password}
-          onChange={(e) => setPassword(e.target.value)}
+          value={formData.password}
+          onChange={handleChange}
           className="form-input"
           required
-          disabled={isLoading}
+          disabled={isLoading || success}
         />
       </div>
 
       <button
         type="submit"
         className="login-button"
-        disabled={isLoading}
+        disabled={isLoading || success}
       >
         {isLoading ? 'Creando cuenta...' : 'Crear cuenta'}
       </button>

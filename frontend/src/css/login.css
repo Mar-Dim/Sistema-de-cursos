@@ -249,3 +249,16 @@ body {
   white-space: nowrap;
   border-width: 0;
 }
+/* Añade esto a tu archivo login.css */
+
+.success-message {
+  color: #2E7D32; /* Un verde oscuro */
+  background-color: #E8F5E9; /* Un fondo verde muy claro */
+  border: 1px solid #A5D6A7;
+  border-radius: 8px;
+  padding: 0.75rem;
+  font-weight: 700;
+  font-size: 0.9rem;
+  margin-top: -0.5rem;
+  margin-bottom: 0.5rem;
+}
