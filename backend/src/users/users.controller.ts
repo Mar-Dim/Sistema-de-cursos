@@ -1,11 +1,18 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete, UseGuards, Request } from '@nestjs/common';
 import { UsersService } from './users.service';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
-
+import { Auth } from 'src/auth/entities/auth.entity';
+import { AuthGuard } from '@nestjs/passport';
+import { parse } from 'path';
 @Controller('users')
 export class UsersController {
   constructor(private readonly usersService: UsersService) {}
+  @UseGuards(AuthGuard('jwt'))
+  @Get('profile')
+  getProfile(@Request() req) {
+    return req.user;
+  }
 
   @Post()
   create(@Body() createUserDto: CreateUserDto) {
@@ -19,16 +26,28 @@ export class UsersController {
 
   @Get(':id')
   findOne(@Param('id') id: string) {
-    return this.usersService.findOne(+id);
+    const numericId = parseInt(id, 10);
+    if (isNaN(numericId)) {
+      throw new Error('El id debe ser un valor numerico');
+    }
+    return this.usersService.findOne(numericId);
   }
 
   @Patch(':id')
   update(@Param('id') id: string, @Body() updateUserDto: UpdateUserDto) {
-    return this.usersService.update(+id, updateUserDto);
+    const numericId = parseInt(id, 10);
+    if (isNaN(numericId)) {
+      throw new Error('El id debe ser un valor numerico');
+    }
+    return this.usersService.update(numericId, updateUserDto);
   }
 
   @Delete(':id')
   remove(@Param('id') id: string) {
-    return this.usersService.remove(+id);
+    const numericId = parseInt(id, 10);
+    if (isNaN(numericId)) {
+      throw new Error('El id debe ser un valor numerico');
+    }
+    return this.usersService.remove(numericId);
   }
 }

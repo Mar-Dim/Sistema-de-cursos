@@ -1,0 +1,251 @@
+/* --- Fuentes y Variables Globales --- */
+@import url('https://fonts.googleapis.com/css2?family=Nunito:wght@700;800&display=swap');
+
+/* --- CORRECCIÓN #1: Box Sizing Global --- */
+/* Esto soluciona el problema de desbordamiento de los inputs. 
+   Asegura que el padding y el borde se incluyan en el ancho total del elemento. */
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+:root {
+  /* --- NUEVA Paleta de colores MORADA --- */
+  --brand-purple: #8B5CF6;       /* Morado principal (más vibrante) */
+  --brand-purple-dark: #7C3AED;  /* Morado oscuro para sombras/hover */
+  --brand-purple-light: #C4B5FD; /* Morado claro para foco */
+  
+  --text-primary: #3c3c3c;
+  --text-secondary: #777777;
+  --background-light: #f7f7f7;
+  --border-color: #e5e5e5;
+  --white: #ffffff;
+  --error-red: #ea2b2b;
+  
+  /* Tipografía */
+  --font-family: 'Nunito', sans-serif;
+
+  /* Estilos de UI */
+  --border-radius-card: 24px;
+  --border-radius-input: 16px;
+  --shadow-card: 0 4px 0px 0px #e5e5e5;
+  /* Sombra de foco actualizada al nuevo color */
+  --shadow-focus: 0 0 0 3px var(--brand-purple-light);
+  
+  /* Transiciones */
+  --transition-fast: 0.2s ease;
+  --transition-smooth: 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+}
+
+/* --- Estilos Base --- */
+body {
+  font-family: var(--font-family);
+  color: var(--text-primary);
+  margin: 0; /* Aseguramos que no haya márgenes por defecto */
+}
+
+/* --- Layout Principal con NUEVO FONDO --- */
+.login-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+  min-height: 100vh;
+  padding: 1rem;
+  /* Fondo en degradé de morado pastel a celeste pastel */
+  background: linear-gradient(135deg, #d8b4fe 0%, #a5f3fc 100%);
+  overflow: hidden;
+  position: relative;
+}
+
+/* --- Tarjeta de Login Animada --- */
+@keyframes fadeInUp {
+  from { opacity: 0; transform: translateY(20px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.login-card {
+  background: var(--white);
+  border-radius: var(--border-radius-card);
+  padding: 2rem;
+  box-shadow: var(--shadow-card);
+  border: 2px solid var(--border-color);
+  text-align: center;
+  width: 100%;
+  max-width: 440px; 
+  animation: fadeInUp 0.5s var(--transition-smooth) forwards;
+
+}
+.login-header {
+  margin-bottom: 1.5rem;
+}
+.welcome-title {
+  font-size: 1.75rem;
+  font-weight: 800;
+  margin: 0.5rem 0;
+  color: var(--text-primary);
+}
+.welcome-subtitle {
+  font-size: 1rem;
+  color: var(--text-secondary);
+  margin: 0;
+}
+
+/* --- Formulario y Entradas --- */
+.login-form {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+.input-group {
+  position: relative;
+}
+.input-icon {
+  position: absolute;
+  left: 16px;
+  top: 50%;
+  transform: translateY(-50%);
+  color: var(--text-secondary);
+  pointer-events: none;
+  width: 20px;
+  height: 20px;
+}
+.form-input {
+  width: 100%; /* Ahora funciona correctamente gracias a box-sizing */
+  padding: 1rem 1rem 1rem 3.5rem;
+  border: 2px solid var(--border-color);
+  border-radius: var(--border-radius-input);
+  font-size: 1rem;
+  font-family: var(--font-family);
+  font-weight: 700;
+  outline: none;
+  transition: border-color var(--transition-fast), box-shadow var(--transition-fast);
+}
+.form-input::placeholder {
+  color: var(--text-secondary);
+  font-weight: 700;
+}
+.form-input:focus {
+  border-color: var(--brand-purple); /* Color actualizado */
+  box-shadow: var(--shadow-focus);
+}
+
+.password-toggle {
+  position: absolute;
+  right: 12px;
+  top: 50%;
+  transform: translateY(-50%);
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 0.5rem;
+  color: var(--text-secondary);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.password-toggle:hover {
+  background-color: #f0f0f0;
+}
+.password-toggle .icon {
+  width: 20px;
+  height: 20px;
+}
+
+/* --- Botón de Login (Color Actualizado) --- */
+.login-button {
+  background-color: var(--brand-purple); /* Color actualizado */
+  color: var(--white);
+  border: none;
+  padding: 1rem;
+  border-radius: var(--border-radius-input);
+  font-size: 1.1rem;
+  font-weight: 800;
+  cursor: pointer;
+  text-transform: uppercase;
+  letter-spacing: 0.8px;
+  box-shadow: 0 4px 0 0 var(--brand-purple-dark); /* Color actualizado */
+  transition: transform var(--transition-fast), box-shadow var(--transition-fast);
+}
+.login-button:hover {
+  transform: translateY(-2px);
+}
+.login-button:active {
+  transform: translateY(2px);
+  box-shadow: 0 2px 0 0 var(--brand-purple-dark); /* Color actualizado */
+}
+.login-button:disabled {
+  background-color: var(--border-color);
+  color: var(--text-secondary);
+  box-shadow: 0 4px 0 0 #b7b7b7;
+  cursor: not-allowed;
+  transform: translateY(0);
+}
+
+/* --- Mensaje de Error --- */
+.error-message {
+  color: var(--error-red);
+  font-weight: 700;
+  font-size: 0.9rem;
+  margin-top: -0.5rem;
+  margin-bottom: 0.5rem;
+  text-align: left; /* Mejor para mensajes de error */
+}
+
+/* --- Sección de Registro (Color Actualizado) --- */
+.register-section {
+  margin-top: 1rem;
+  font-size: 1rem;
+  color: var(--text-primary); /* Ligeramente más oscuro para legibilidad sobre el fondo */
+}
+.register-link {
+  color: var(--brand-purple); /* Color actualizado */
+  text-decoration: none;
+  font-weight: 800;
+  transition: color var(--transition-fast);
+}
+.register-link:hover {
+  color: var(--brand-purple-dark); /* Color actualizado */
+  text-decoration: underline;
+}
+
+/* --- Mascota / Decoración --- */
+/* --- CSS Actualizado para la Mascota --- */
+
+.mascot-corner {
+  position: absolute;
+  bottom: 20px; /* Cambiado de 'top' */
+  right: 20px;   /* Cambiado de 'right' */
+  
+  /* Ajustamos el origen para que la animación parta de la esquina correcta */
+  transform-origin: bottom left; 
+  transition: transform var(--transition-smooth);
+}
+
+.mascot-corner:hover {
+  /* La rotación negativa se siente más natural desde la izquierda */
+  transform: scale(1.1) rotate(-5deg); 
+}
+
+.mascot-img {
+  width: 400px;
+  /* El 'display: block' previene un pequeño espacio extra debajo de la imagen */
+  display: block; 
+  user-select: none;
+  filter: drop-shadow(0 4px 8px rgba(0,0,0,0.1));
+}
+
+/* --- Etiqueta para Accesibilidad --- */
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border-width: 0;
+}

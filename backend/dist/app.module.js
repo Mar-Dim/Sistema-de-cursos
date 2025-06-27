@@ -13,6 +13,7 @@ const auth_module_1 = require("./auth/auth.module");
 const lessons_module_1 = require("./lessons/lessons.module");
 const progress_module_1 = require("./progress/progress.module");
 const users_module_1 = require("./users/users.module");
+const question_module_1 = require("./question/question.module");
 let AppModule = class AppModule {
 };
 exports.AppModule = AppModule;
@@ -33,6 +34,7 @@ exports.AppModule = AppModule = __decorate([
             auth_module_1.AuthModule,
             lessons_module_1.LessonsModule,
             progress_module_1.ProgressModule,
+            question_module_1.QuestionModule,
         ],
     })
 ], AppModule);

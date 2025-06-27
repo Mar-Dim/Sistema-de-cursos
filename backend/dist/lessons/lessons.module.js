@@ -8,6 +8,9 @@ var __decorate = (this && this.__decorate) || function (decorators, target, key,
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.LessonsModule = void 0;
 const common_1 = require("@nestjs/common");
+const typeorm_1 = require("@nestjs/typeorm");
+const lesson_entity_1 = require("./entities/lesson.entity");
+const question_entity_1 = require("../question/entities/question.entity");
 const lessons_service_1 = require("./lessons.service");
 const lessons_controller_1 = require("./lessons.controller");
 let LessonsModule = class LessonsModule {
@@ -15,6 +18,7 @@ let LessonsModule = class LessonsModule {
 exports.LessonsModule = LessonsModule;
 exports.LessonsModule = LessonsModule = __decorate([
     (0, common_1.Module)({
+        imports: [typeorm_1.TypeOrmModule.forFeature([lesson_entity_1.Lesson, question_entity_1.Question])],
         controllers: [lessons_controller_1.LessonsController],
         providers: [lessons_service_1.LessonsService],
     })

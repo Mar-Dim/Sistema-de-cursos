@@ -17,10 +17,14 @@ const common_1 = require("@nestjs/common");
 const users_service_1 = require("./users.service");
 const create_user_dto_1 = require("./dto/create-user.dto");
 const update_user_dto_1 = require("./dto/update-user.dto");
+const passport_1 = require("@nestjs/passport");
 let UsersController = class UsersController {
     usersService;
     constructor(usersService) {
         this.usersService = usersService;
+    }
+    getProfile(req) {
+        return req.user;
     }
     create(createUserDto) {
         return this.usersService.create(createUserDto);
@@ -29,16 +33,36 @@ let UsersController = class UsersController {
         return this.usersService.findAll();
     }
     findOne(id) {
-        return this.usersService.findOne(+id);
+        const numericId = parseInt(id, 10);
+        if (isNaN(numericId)) {
+            throw new Error('El id debe ser un valor numerico');
+        }
+        return this.usersService.findOne(numericId);
     }
     update(id, updateUserDto) {
-        return this.usersService.update(+id, updateUserDto);
+        const numericId = parseInt(id, 10);
+        if (isNaN(numericId)) {
+            throw new Error('El id debe ser un valor numerico');
+        }
+        return this.usersService.update(numericId, updateUserDto);
     }
     remove(id) {
-        return this.usersService.remove(+id);
+        const numericId = parseInt(id, 10);
+        if (isNaN(numericId)) {
+            throw new Error('El id debe ser un valor numerico');
+        }
+        return this.usersService.remove(numericId);
     }
 };
 exports.UsersController = UsersController;
+__decorate([
+    (0, common_1.UseGuards)((0, passport_1.AuthGuard)('jwt')),
+    (0, common_1.Get)('profile'),
+    __param(0, (0, common_1.Request)()),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [Object]),
+    __metadata("design:returntype", void 0)
+], UsersController.prototype, "getProfile", null);
 __decorate([
     (0, common_1.Post)(),
     __param(0, (0, common_1.Body)()),

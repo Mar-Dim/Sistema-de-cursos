@@ -1,4 +1,5 @@
-import { Entity, PrimaryGeneratedColumn, Column } from 'typeorm';
+import { Question } from 'src/question/entities/question.entity';
+import { Entity, PrimaryGeneratedColumn, Column, OneToMany } from 'typeorm';
 
 @Entity()
 export class Lesson {
@@ -12,5 +13,11 @@ export class Lesson {
   type: 'vocabulario' | 'gramatica' | 'listening' | 'practica';
 
   @Column()
-  order_index: number;
+  order: number;
+
+  @Column()
+  requiredScore: number;
+
+  @OneToMany(() => Question, (question) => question.lesson, { cascade: true })
+  questions: Question[];
 }

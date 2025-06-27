@@ -9,43 +9,38 @@ var __metadata = (this && this.__metadata) || function (k, v) {
     if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.Lesson = void 0;
-const question_entity_1 = require("../../question/entities/question.entity");
+exports.Question = void 0;
+const lesson_entity_1 = require("./../../lessons/entities/lesson.entity");
 const typeorm_1 = require("typeorm");
-let Lesson = class Lesson {
+let Question = class Question {
     id;
-    title;
-    type;
-    order;
-    requiredScore;
-    questions;
+    text;
+    options;
+    correctOptionIndex;
+    lesson;
 };
-exports.Lesson = Lesson;
+exports.Question = Question;
 __decorate([
     (0, typeorm_1.PrimaryGeneratedColumn)(),
     __metadata("design:type", Number)
-], Lesson.prototype, "id", void 0);
+], Question.prototype, "id", void 0);
 __decorate([
     (0, typeorm_1.Column)(),
     __metadata("design:type", String)
-], Lesson.prototype, "title", void 0);
+], Question.prototype, "text", void 0);
 __decorate([
-    (0, typeorm_1.Column)(),
-    __metadata("design:type", String)
-], Lesson.prototype, "type", void 0);
-__decorate([
-    (0, typeorm_1.Column)(),
-    __metadata("design:type", Number)
-], Lesson.prototype, "order", void 0);
-__decorate([
-    (0, typeorm_1.Column)(),
-    __metadata("design:type", Number)
-], Lesson.prototype, "requiredScore", void 0);
-__decorate([
-    (0, typeorm_1.OneToMany)(() => question_entity_1.Question, (question) => question.lesson, { cascade: true }),
+    (0, typeorm_1.Column)('simple-array'),
     __metadata("design:type", Array)
-], Lesson.prototype, "questions", void 0);
-exports.Lesson = Lesson = __decorate([
+], Question.prototype, "options", void 0);
+__decorate([
+    (0, typeorm_1.Column)(),
+    __metadata("design:type", Number)
+], Question.prototype, "correctOptionIndex", void 0);
+__decorate([
+    (0, typeorm_1.ManyToOne)(() => lesson_entity_1.Lesson, (lesson) => lesson.questions, { onDelete: 'CASCADE' }),
+    __metadata("design:type", lesson_entity_1.Lesson)
+], Question.prototype, "lesson", void 0);
+exports.Question = Question = __decorate([
     (0, typeorm_1.Entity)()
-], Lesson);
-//# sourceMappingURL=lesson.entity.js.map
+], Question);
+//# sourceMappingURL=question.entity.js.map
