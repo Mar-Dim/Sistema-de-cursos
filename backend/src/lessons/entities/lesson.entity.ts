@@ -1,6 +1,14 @@
 import { Question } from 'src/question/entities/question.entity';
 import { Entity, PrimaryGeneratedColumn, Column, OneToMany } from 'typeorm';
 
+export enum LessonType{
+  VOCABULARIO = 'vocabulario',
+  GRAMATICA = 'gramatica',
+  LISTENING = 'listening',
+  PRACTICA = 'practica',
+}
+
+
 @Entity()
 export class Lesson {
   @PrimaryGeneratedColumn()
@@ -9,8 +17,8 @@ export class Lesson {
   @Column()
   title: string;
 
-  @Column()
-  type: 'vocabulario' | 'gramatica' | 'listening' | 'practica';
+  @Column({type: 'enum', enum: LessonType})
+  type: LessonType;
 
   @Column()
   order: number;
@@ -18,6 +26,6 @@ export class Lesson {
   @Column()
   requiredScore: number;
 
-  @OneToMany(() => Question, (question) => question.lesson, { cascade: true })
+  @OneToMany(() => Question, (question) => question.lesson, { cascade: true, eager: true })
   questions: Question[];
 }

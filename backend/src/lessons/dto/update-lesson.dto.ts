@@ -1,4 +1,22 @@
-import { PartialType } from '@nestjs/mapped-types';
-import { CreateLessonDto } from './create-lesson.dto';
+import { IsEnum, IsNumber, IsOptional, IsString } from "class-validator";
+import { LessonType } from "../entities/lesson.entity";
 
-export class UpdateLessonDto extends PartialType(CreateLessonDto) {}
+
+export class UpdateLessonDto {
+
+    @IsOptional()
+    @IsString()
+    title: string;
+
+    @IsOptional()
+    @IsEnum(LessonType, { message: 'Type solo puede ser de tipo vocabulario, gramtica, listening o practica' })
+    type: LessonType;
+
+    @IsOptional()
+    @IsNumber()
+    order: number;
+
+    @IsOptional()
+    @IsNumber()
+    requiredScore: number;
+}
