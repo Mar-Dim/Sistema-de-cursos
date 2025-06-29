@@ -1,14 +1,9 @@
-/* src/css/sidebar.css */
-
-/* --- Layout Principal de la Sidebar (Escritorio) --- */
 .sidebar {
   width: 280px; /* Ancho fijo para la vista de escritorio */
   flex-shrink: 0; /* Evita que la sidebar se encoja */
   background-color: var(--white);
   border-right: 2px solid var(--border-color);
   padding: 2rem;
-  
-  /* Flexbox para organizar el contenido verticalmente */
   display: flex;
   flex-direction: column;
   justify-content: space-between; /* Empuja el botón de logout hacia abajo */
@@ -16,7 +11,6 @@
   transition: width 0.3s ease, padding 0.3s ease;
 }
 
-/* --- Sección de Información del Usuario --- */
 .user-info {
   display: flex;
   flex-direction: column;
@@ -65,6 +59,29 @@
 
 .stats p {
   margin: 0.5rem 0;
+}
+/* Añade esto a tu archivo sidebar.css */
+
+.stats {
+  /* ... tus estilos existentes para .stats ... */
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+  padding-bottom: 1.5rem;
+}
+
+.progress-bar-container {
+  width: 100%;
+  height: 8px;
+  background-color: rgba(0, 0, 0, 0.3);
+  border-radius: 4px;
+  margin: 0.5rem 0 1rem 0;
+  overflow: hidden; /* Asegura que la barra interior no se salga */
+}
+
+.progress-bar {
+  height: 100%;
+  background-color: var(--brand-purple-light); /* O el color que prefieras */
+  border-radius: 4px;
+  transition: width 0.5s cubic-bezier(0.25, 0.8, 0.25, 1);
 }
 
 /* --- Botón de Cerrar Sesión --- */
