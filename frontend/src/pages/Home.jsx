@@ -34,8 +34,28 @@ export default function HomePage() {
   const [currentLessonId, setCurrentLessonId] = useState(null);
 
   // El useEffect para obtener el perfil de usuario se mantiene igual
-  useEffect(() => {
-    // ... tu código para getProfile ...
+      useEffect(() => {
+  const token = localStorage.getItem('token');
+  console.log('TOKEN:', token); 
+
+  if (token) {
+    getProfile(token)
+      .then(res => {
+        console.log('RESPUESTA DEL PERFIL:', res.data); 
+
+        if (res.data && res.data.username) {
+          setUsername(res.data.username);
+        } else {
+          console.warn('No se encontró el username en la respuesta');
+        }
+      })
+      .catch(err => {
+        console.error('Error al obtener perfil:', err);
+       
+      });
+  } else {
+    console.warn('No hay token en localStorage');
+  }
   }, []);
 
   const handleLogout = () => {
