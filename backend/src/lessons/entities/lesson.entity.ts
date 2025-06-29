@@ -1,11 +1,12 @@
 import { Question } from 'src/question/entities/question.entity';
 import { Entity, PrimaryGeneratedColumn, Column, OneToMany } from 'typeorm';
 
-export enum LessonType{
-  VOCABULARIO = 'vocabulario',
-  GRAMATICA = 'gramatica',
-  LISTENING = 'listening',
-  PRACTICA = 'practica',
+export enum LessonType {
+  LESSON = 'lesson',
+  QUIZ = 'quiz',
+  CASE_STUDY = 'case_study',
+  REMEDIATION = 'remediation',
+  EVALUATION = 'evaluation',
 }
 
 
@@ -17,7 +18,7 @@ export class Lesson {
   @Column()
   title: string;
 
-  @Column({type: 'enum', enum: LessonType})
+  @Column({ type: 'enum', enum: LessonType, default:LessonType.LESSON })
   type: LessonType;
 
   @Column()
