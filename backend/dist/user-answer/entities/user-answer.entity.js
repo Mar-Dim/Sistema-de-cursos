@@ -9,42 +9,46 @@ var __metadata = (this && this.__metadata) || function (k, v) {
     if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.Progress = void 0;
-const lesson_entity_1 = require("../../lessons/entities/lesson.entity");
+exports.UserAnswer = void 0;
+const question_entity_1 = require("../../question/entities/question.entity");
 const user_entity_1 = require("../../users/entities/user.entity");
 const typeorm_1 = require("typeorm");
-let Progress = class Progress {
+let UserAnswer = class UserAnswer {
     id;
     user;
-    lesson;
-    score;
-    completed;
+    question;
+    selectedOptionIndex;
+    isCorrect;
+    createdAt;
 };
-exports.Progress = Progress;
+exports.UserAnswer = UserAnswer;
 __decorate([
     (0, typeorm_1.PrimaryGeneratedColumn)(),
     __metadata("design:type", Number)
-], Progress.prototype, "id", void 0);
+], UserAnswer.prototype, "id", void 0);
 __decorate([
     (0, typeorm_1.ManyToOne)(() => user_entity_1.User, { onDelete: 'CASCADE' }),
     (0, typeorm_1.JoinColumn)({ name: 'user_id' }),
     __metadata("design:type", user_entity_1.User)
-], Progress.prototype, "user", void 0);
+], UserAnswer.prototype, "user", void 0);
 __decorate([
-    (0, typeorm_1.ManyToOne)(() => lesson_entity_1.Lesson, { onDelete: 'CASCADE' }),
-    (0, typeorm_1.JoinColumn)({ name: 'lesson_id' }),
-    __metadata("design:type", lesson_entity_1.Lesson)
-], Progress.prototype, "lesson", void 0);
+    (0, typeorm_1.ManyToOne)(() => question_entity_1.Question, { onDelete: 'CASCADE' }),
+    (0, typeorm_1.JoinColumn)({ name: 'question_id' }),
+    __metadata("design:type", question_entity_1.Question)
+], UserAnswer.prototype, "question", void 0);
 __decorate([
-    (0, typeorm_1.Column)({ default: 0 }),
+    (0, typeorm_1.Column)(),
     __metadata("design:type", Number)
-], Progress.prototype, "score", void 0);
+], UserAnswer.prototype, "selectedOptionIndex", void 0);
 __decorate([
     (0, typeorm_1.Column)({ default: false }),
     __metadata("design:type", Boolean)
-], Progress.prototype, "completed", void 0);
-exports.Progress = Progress = __decorate([
-    (0, typeorm_1.Unique)(['user', 'lesson']),
+], UserAnswer.prototype, "isCorrect", void 0);
+__decorate([
+    (0, typeorm_1.CreateDateColumn)(),
+    __metadata("design:type", Date)
+], UserAnswer.prototype, "createdAt", void 0);
+exports.UserAnswer = UserAnswer = __decorate([
     (0, typeorm_1.Entity)()
-], Progress);
-//# sourceMappingURL=progress.entity.js.map
+], UserAnswer);
+//# sourceMappingURL=user-answer.entity.js.map

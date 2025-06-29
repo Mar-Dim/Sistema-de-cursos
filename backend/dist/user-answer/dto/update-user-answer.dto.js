@@ -9,21 +9,15 @@ var __metadata = (this && this.__metadata) || function (k, v) {
     if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.UpdateProgressDto = void 0;
+exports.UpdateUserAnswerDto = void 0;
 const class_validator_1 = require("class-validator");
-class UpdateProgressDto {
-    score;
-    completed;
+class UpdateUserAnswerDto {
+    selectedOptionIndex;
 }
-exports.UpdateProgressDto = UpdateProgressDto;
-__decorate([
-    (0, class_validator_1.IsNumber)(),
-    (0, class_validator_1.Min)(0),
-    __metadata("design:type", Number)
-], UpdateProgressDto.prototype, "score", void 0);
+exports.UpdateUserAnswerDto = UpdateUserAnswerDto;
 __decorate([
     (0, class_validator_1.IsOptional)(),
-    (0, class_validator_1.IsBoolean)(),
-    __metadata("design:type", Boolean)
-], UpdateProgressDto.prototype, "completed", void 0);
-//# sourceMappingURL=update-progress.dto.js.map
+    (0, class_validator_1.IsNumber)(),
+    __metadata("design:type", Number)
+], UpdateUserAnswerDto.prototype, "selectedOptionIndex", void 0);
+//# sourceMappingURL=update-user-answer.dto.js.map

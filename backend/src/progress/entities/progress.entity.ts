@@ -1,7 +1,8 @@
 import { Lesson } from 'src/lessons/entities/lesson.entity';
 import { User } from 'src/users/entities/user.entity';
-import { Entity, PrimaryGeneratedColumn, Column, ManyToOne, JoinColumn } from 'typeorm';
+import { Entity, PrimaryGeneratedColumn, Column, ManyToOne, JoinColumn, Unique } from 'typeorm';
 
+@Unique(['user','lesson'])
 @Entity()
 export class Progress {
   @PrimaryGeneratedColumn()
@@ -13,7 +14,7 @@ export class Progress {
 
   @ManyToOne(() => Lesson, {onDelete: 'CASCADE'})
   @JoinColumn({name: 'lesson_id'})
-  lesson: number;
+  lesson: Lesson;
 
   @Column({ default: 0 })
   score: number;

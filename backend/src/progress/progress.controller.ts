@@ -17,6 +17,16 @@ export class ProgressController {
     return this.progressService.findAll();
   }
 
+  @Get('/user/:id')
+  findAllByUser(@Param('id') id: string) {
+    return this.progressService.findByUser(+id);
+  }
+
+   @Get('/lesson/:id')
+  findAllByLesson(@Param('id') id: string) {
+    return this.progressService.findByLesson(+id);
+  }
+
   @Get(':id')
   findOne(@Param('id') id: string) {
     return this.progressService.findOne(+id);

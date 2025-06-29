@@ -28,6 +28,12 @@ let ProgressController = class ProgressController {
     findAll() {
         return this.progressService.findAll();
     }
+    findAllByUser(id) {
+        return this.progressService.findByUser(+id);
+    }
+    findAllByLesson(id) {
+        return this.progressService.findByLesson(+id);
+    }
     findOne(id) {
         return this.progressService.findOne(+id);
     }
@@ -52,6 +58,20 @@ __decorate([
     __metadata("design:paramtypes", []),
     __metadata("design:returntype", void 0)
 ], ProgressController.prototype, "findAll", null);
+__decorate([
+    (0, common_1.Get)('/user/:id'),
+    __param(0, (0, common_1.Param)('id')),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [String]),
+    __metadata("design:returntype", void 0)
+], ProgressController.prototype, "findAllByUser", null);
+__decorate([
+    (0, common_1.Get)('/lesson/:id'),
+    __param(0, (0, common_1.Param)('id')),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [String]),
+    __metadata("design:returntype", void 0)
+], ProgressController.prototype, "findAllByLesson", null);
 __decorate([
     (0, common_1.Get)(':id'),
     __param(0, (0, common_1.Param)('id')),

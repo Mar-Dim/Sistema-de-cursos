@@ -10,11 +10,18 @@ exports.ProgressModule = void 0;
 const common_1 = require("@nestjs/common");
 const progress_service_1 = require("./progress.service");
 const progress_controller_1 = require("./progress.controller");
+const typeorm_1 = require("@nestjs/typeorm");
+const progress_entity_1 = require("./entities/progress.entity");
+const user_entity_1 = require("../users/entities/user.entity");
+const lesson_entity_1 = require("../lessons/entities/lesson.entity");
 let ProgressModule = class ProgressModule {
 };
 exports.ProgressModule = ProgressModule;
 exports.ProgressModule = ProgressModule = __decorate([
     (0, common_1.Module)({
+        imports: [
+            typeorm_1.TypeOrmModule.forFeature([progress_entity_1.Progress, user_entity_1.User, lesson_entity_1.Lesson])
+        ],
         controllers: [progress_controller_1.ProgressController],
         providers: [progress_service_1.ProgressService],
     })

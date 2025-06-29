@@ -14,6 +14,7 @@ const lessons_module_1 = require("./lessons/lessons.module");
 const progress_module_1 = require("./progress/progress.module");
 const users_module_1 = require("./users/users.module");
 const question_module_1 = require("./question/question.module");
+const user_answer_module_1 = require("./user-answer/user-answer.module");
 let AppModule = class AppModule {
 };
 exports.AppModule = AppModule;
@@ -35,6 +36,7 @@ exports.AppModule = AppModule = __decorate([
             lessons_module_1.LessonsModule,
             progress_module_1.ProgressModule,
             question_module_1.QuestionModule,
+            user_answer_module_1.UserAnswerModule,
         ],
     })
 ], AppModule);

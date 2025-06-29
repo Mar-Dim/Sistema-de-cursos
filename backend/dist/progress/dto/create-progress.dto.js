@@ -29,8 +29,8 @@ __decorate([
     __metadata("design:type", Number)
 ], CreateProgressDto.prototype, "lesson_id", void 0);
 __decorate([
-    (0, class_validator_1.IsNotEmpty)(),
     (0, class_validator_1.IsNumber)(),
+    (0, class_validator_1.Min)(0),
     __metadata("design:type", Number)
 ], CreateProgressDto.prototype, "score", void 0);
 __decorate([

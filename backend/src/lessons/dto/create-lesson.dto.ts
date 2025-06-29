@@ -1,5 +1,5 @@
 import { Type } from "class-transformer";
-import { IsEnum, IsNotEmpty, IsNumber, IsOptional, IsString, Min, ValidateNested } from "class-validator";
+import { IsEnum, IsNotEmpty, IsNumber, IsOptional, IsString, Max, Min, ValidateNested } from "class-validator";
 import { LessonType } from "../entities/lesson.entity";
 import { CreateEmbeddedQuestionDto } from "src/question/dto/create-embeddedQuestion.dto";
 
@@ -18,7 +18,8 @@ export class CreateLessonDto {
     order: number;
 
     @IsNumber()
-    @Min(0)
+    @Min(85)
+    @Max(100)
     requiredScore: number;
 
     @ValidateNested({ each: true })
