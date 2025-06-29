@@ -38,8 +38,9 @@ __decorate([
     __metadata("design:type", Number)
 ], CreateLessonDto.prototype, "order", void 0);
 __decorate([
-    (0, class_validator_1.IsNotEmpty)(),
     (0, class_validator_1.IsNumber)(),
+    (0, class_validator_1.Min)(85),
+    (0, class_validator_1.Max)(100),
     __metadata("design:type", Number)
 ], CreateLessonDto.prototype, "requiredScore", void 0);
 __decorate([

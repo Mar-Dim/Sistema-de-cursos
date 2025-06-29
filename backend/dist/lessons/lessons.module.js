@@ -13,14 +13,16 @@ const lesson_entity_1 = require("./entities/lesson.entity");
 const question_entity_1 = require("../question/entities/question.entity");
 const lessons_service_1 = require("./lessons.service");
 const lessons_controller_1 = require("./lessons.controller");
+const lesson_recommendation_service_1 = require("./service/lesson-recommendation.service");
+const progress_entity_1 = require("../progress/entities/progress.entity");
 let LessonsModule = class LessonsModule {
 };
 exports.LessonsModule = LessonsModule;
 exports.LessonsModule = LessonsModule = __decorate([
     (0, common_1.Module)({
-        imports: [typeorm_1.TypeOrmModule.forFeature([lesson_entity_1.Lesson, question_entity_1.Question])],
+        imports: [typeorm_1.TypeOrmModule.forFeature([lesson_entity_1.Lesson, question_entity_1.Question, progress_entity_1.Progress])],
         controllers: [lessons_controller_1.LessonsController],
-        providers: [lessons_service_1.LessonsService],
+        providers: [lessons_service_1.LessonsService, lesson_recommendation_service_1.LessonRecommendationService],
     })
 ], LessonsModule);
 //# sourceMappingURL=lessons.module.js.map

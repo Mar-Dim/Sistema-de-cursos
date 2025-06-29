@@ -1,7 +1,8 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete, Query, NotFoundException } from '@nestjs/common';
 import { LessonsService } from './lessons.service';
 import { CreateLessonDto } from './dto/create-lesson.dto';
 import { UpdateLessonDto } from './dto/update-lesson.dto';
+import { User } from 'src/users/entities/user.entity';
 
 @Controller('lessons')
 export class LessonsController {
@@ -10,6 +11,14 @@ export class LessonsController {
   @Post()
   create(@Body() createLessonDto: CreateLessonDto) {
     return this.lessonsService.create(createLessonDto);
+  }
+
+  @Get('recommendation')
+  async getRecommendation(@Query('userId') userId: number) {
+    const user = { id: userId } as User;
+    const lesson = await this.lessonsService.getRecommendedLesson(user);
+    if (!lesson) throw new NotFoundException('No se pudo recomendar una lección.');
+    return lesson;
   }
 
   @Get()

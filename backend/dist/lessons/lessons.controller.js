@@ -25,6 +25,13 @@ let LessonsController = class LessonsController {
     create(createLessonDto) {
         return this.lessonsService.create(createLessonDto);
     }
+    async getRecommendation(userId) {
+        const user = { id: userId };
+        const lesson = await this.lessonsService.getRecommendedLesson(user);
+        if (!lesson)
+            throw new common_1.NotFoundException('No se pudo recomendar una lección.');
+        return lesson;
+    }
     findAll() {
         return this.lessonsService.findAll();
     }
@@ -46,6 +53,13 @@ __decorate([
     __metadata("design:paramtypes", [create_lesson_dto_1.CreateLessonDto]),
     __metadata("design:returntype", void 0)
 ], LessonsController.prototype, "create", null);
+__decorate([
+    (0, common_1.Get)('recommendation'),
+    __param(0, (0, common_1.Query)('userId')),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [Number]),
+    __metadata("design:returntype", Promise)
+], LessonsController.prototype, "getRecommendation", null);
 __decorate([
     (0, common_1.Get)(),
     __metadata("design:type", Function),

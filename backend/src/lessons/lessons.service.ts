@@ -4,6 +4,8 @@ import { UpdateLessonDto } from './dto/update-lesson.dto';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Lesson } from './entities/lesson.entity';
 import { Repository } from 'typeorm';
+import { LessonRecommendationService } from './service/lesson-recommendation.service';
+import { User } from 'src/users/entities/user.entity';
 
 @Injectable()
 export class LessonsService {
@@ -11,6 +13,7 @@ export class LessonsService {
   constructor(
     @InjectRepository(Lesson)
     private readonly lessonRepo: Repository<Lesson>,
+    private readonly lessonRecommendationService: LessonRecommendationService,
   ){}
 
   async create(createLessonDto: CreateLessonDto) {
@@ -24,6 +27,10 @@ export class LessonsService {
     });
 
     return this.lessonRepo.save(lesson);
+  }
+
+  async getRecommendedLesson(user: User): Promise<Lesson | null> {
+    return this.lessonRecommendationService.getNextLesson(user);
   }
 
   async findAll(): Promise<Lesson[]> {

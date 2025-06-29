@@ -5,6 +5,7 @@ import { LessonsModule } from './lessons/lessons.module';
 import { ProgressModule } from './progress/progress.module';
 import { UsersModule } from './users/users.module';
 import { QuestionModule } from './question/question.module';
+import { UserAnswerModule } from './user-answer/user-answer.module';
 
 @Module({
   imports: [
@@ -12,8 +13,8 @@ import { QuestionModule } from './question/question.module';
       type: 'postgres',
       host: 'localhost',
       port: 5432,
-      username: 'postgres',
-      password: 'Maria2.0',
+      username: 'admin',
+      password: 'curso_ingles',
       database: 'curso_ingles',
       entities: [__dirname + '/**/*.entity{.ts,.js}'],
       synchronize: true,
@@ -23,6 +24,7 @@ import { QuestionModule } from './question/question.module';
     LessonsModule,
     ProgressModule,
     QuestionModule,
+    UserAnswerModule,
   ],
 })
 export class AppModule {}

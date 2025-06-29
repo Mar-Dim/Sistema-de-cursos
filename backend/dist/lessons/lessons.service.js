@@ -17,10 +17,13 @@ const common_1 = require("@nestjs/common");
 const typeorm_1 = require("@nestjs/typeorm");
 const lesson_entity_1 = require("./entities/lesson.entity");
 const typeorm_2 = require("typeorm");
+const lesson_recommendation_service_1 = require("./service/lesson-recommendation.service");
 let LessonsService = class LessonsService {
     lessonRepo;
-    constructor(lessonRepo) {
+    lessonRecommendationService;
+    constructor(lessonRepo, lessonRecommendationService) {
         this.lessonRepo = lessonRepo;
+        this.lessonRecommendationService = lessonRecommendationService;
     }
     async create(createLessonDto) {
         const { questions, ...rest } = createLessonDto;
@@ -31,6 +34,9 @@ let LessonsService = class LessonsService {
             })),
         });
         return this.lessonRepo.save(lesson);
+    }
+    async getRecommendedLesson(user) {
+        return this.lessonRecommendationService.getNextLesson(user);
     }
     async findAll() {
         return this.lessonRepo.find();
@@ -59,6 +65,7 @@ exports.LessonsService = LessonsService;
 exports.LessonsService = LessonsService = __decorate([
     (0, common_1.Injectable)(),
     __param(0, (0, typeorm_1.InjectRepository)(lesson_entity_1.Lesson)),
-    __metadata("design:paramtypes", [typeorm_2.Repository])
+    __metadata("design:paramtypes", [typeorm_2.Repository,
+        lesson_recommendation_service_1.LessonRecommendationService])
 ], LessonsService);
 //# sourceMappingURL=lessons.service.js.map
