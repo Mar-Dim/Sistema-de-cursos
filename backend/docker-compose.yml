@@ -1,18 +1,17 @@
-
+version: "3.8"
 
 services:
   db:
-    image: postgres:17
-    container_name: postgres_curso_ingles
+    image: postgres:16
     restart: always
     environment:
       POSTGRES_USER: admin
-      POSTGRES_PASSWORD: curso_ingles
-      POSTGRES_DB: curso_ingles
+      POSTGRES_PASSWORD: X7p!s9#QvL2@bRmZ
+      POSTGRES_DB: social_network
     ports:
-       - 5432:5432
+      - 5432:5432
     volumes:
-      - pgdata_v17:/var/lib/postgresql/data
+      - pgdata:/var/lib/postgresql/data
 
 volumes:
-  pgdata_v17: {}
+  pgdata:
