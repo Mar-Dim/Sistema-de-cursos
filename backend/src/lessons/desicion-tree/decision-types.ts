@@ -1,6 +1,5 @@
 export interface DecisionContext {
   score: number;
-  time: number;
   completed: boolean;
   [key: string]: any;
 }
