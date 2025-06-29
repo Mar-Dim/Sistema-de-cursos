@@ -5,6 +5,7 @@
   border-right: 2px solid var(--border-color);
   padding: 2rem;
   display: flex;
+  height: 100vh; /* Ocupa toda la altura de la ventana */
   flex-direction: column;
   justify-content: space-between; /* Empuja el botón de logout hacia abajo */
   align-items: center;
@@ -112,6 +113,11 @@
   transform: translateY(2px);
   box-shadow: 0 2px 0 0 #c92424;
 }
+
+
+
+
+
 
 /* ========== RESPONSIVE DESIGN ========== */
 
