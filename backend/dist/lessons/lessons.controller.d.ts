@@ -4,9 +4,9 @@ import { UpdateLessonDto } from './dto/update-lesson.dto';
 export declare class LessonsController {
     private readonly lessonsService;
     constructor(lessonsService: LessonsService);
-    create(createLessonDto: CreateLessonDto): string;
-    findAll(): string;
-    findOne(id: string): string;
-    update(id: string, updateLessonDto: UpdateLessonDto): string;
-    remove(id: string): string;
+    create(createLessonDto: CreateLessonDto): Promise<import("./entities/lesson.entity").Lesson>;
+    findAll(): Promise<import("./entities/lesson.entity").Lesson[]>;
+    findOne(id: string): Promise<import("./entities/lesson.entity").Lesson>;
+    update(id: string, updateLessonDto: UpdateLessonDto): Promise<import("./entities/lesson.entity").Lesson>;
+    remove(id: string): Promise<void>;
 }

@@ -5,28 +5,65 @@ var __decorate = (this && this.__decorate) || function (decorators, target, key,
     else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
     return c > 3 && r && Object.defineProperty(target, key, r), r;
 };
+var __metadata = (this && this.__metadata) || function (k, v) {
+    if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
+};
+var __param = (this && this.__param) || function (paramIndex, decorator) {
+    return function (target, key) { decorator(target, key, paramIndex); }
+};
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.QuestionService = void 0;
 const common_1 = require("@nestjs/common");
+const typeorm_1 = require("@nestjs/typeorm");
+const question_entity_1 = require("./entities/question.entity");
+const typeorm_2 = require("typeorm");
+const lesson_entity_1 = require("../lessons/entities/lesson.entity");
 let QuestionService = class QuestionService {
-    create(createQuestionDto) {
-        return 'This action adds a new question';
+    questionRepo;
+    lessonRepo;
+    constructor(questionRepo, lessonRepo) {
+        this.questionRepo = questionRepo;
+        this.lessonRepo = lessonRepo;
     }
-    findAll() {
-        return `This action returns all question`;
+    async create(createQuestionDto) {
+        const { lessonId, ...questionData } = createQuestionDto;
+        const lesson = await this.lessonRepo.findOneBy({ id: lessonId });
+        if (!lesson)
+            throw new common_1.NotFoundException('No se a encontrado la leccion a la que se quiere asignar la pregunta');
+        const question = await this.questionRepo.create({
+            ...questionData,
+            lesson,
+        });
+        return this.questionRepo.save(question);
     }
-    findOne(id) {
-        return `This action returns a #${id} question`;
+    async findAll() {
+        return this.questionRepo.find();
     }
-    update(id, updateQuestionDto) {
-        return `This action updates a #${id} question`;
+    async findOne(id) {
+        const question = await this.questionRepo.findOneBy({ id });
+        if (!question)
+            throw new common_1.NotFoundException(`No se encontro ninguna pregunta con id ${id}`);
+        return question;
     }
-    remove(id) {
-        return `This action removes a #${id} question`;
+    async update(id, updateQuestionDto) {
+        const question = await this.questionRepo.findOneBy({ id });
+        if (!question)
+            throw new common_1.NotFoundException(`No se encontro ninguna pregunta con id ${id}`);
+        Object.assign(question, updateQuestionDto);
+        return this.questionRepo.save(question);
+    }
+    async remove(id) {
+        const result = await this.questionRepo.delete(id);
+        if (result.affected === 0)
+            throw new common_1.NotFoundException(`No se encontro ninguna pregunta con id ${id}`);
     }
 };
 exports.QuestionService = QuestionService;
 exports.QuestionService = QuestionService = __decorate([
-    (0, common_1.Injectable)()
+    (0, common_1.Injectable)(),
+    __param(0, (0, typeorm_1.InjectRepository)(question_entity_1.Question)),
+    __param(1, (0, typeorm_1.InjectRepository)(lesson_entity_1.Lesson)),
+    __metadata("design:paramtypes", [typeorm_2.Repository,
+        typeorm_2.Repository])
 ], QuestionService);
 //# sourceMappingURL=question.service.js.map

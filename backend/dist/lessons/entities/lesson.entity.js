@@ -9,9 +9,16 @@ var __metadata = (this && this.__metadata) || function (k, v) {
     if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.Lesson = void 0;
+exports.Lesson = exports.LessonType = void 0;
 const question_entity_1 = require("../../question/entities/question.entity");
 const typeorm_1 = require("typeorm");
+var LessonType;
+(function (LessonType) {
+    LessonType["VOCABULARIO"] = "vocabulario";
+    LessonType["GRAMATICA"] = "gramatica";
+    LessonType["LISTENING"] = "listening";
+    LessonType["PRACTICA"] = "practica";
+})(LessonType || (exports.LessonType = LessonType = {}));
 let Lesson = class Lesson {
     id;
     title;
@@ -30,7 +37,7 @@ __decorate([
     __metadata("design:type", String)
 ], Lesson.prototype, "title", void 0);
 __decorate([
-    (0, typeorm_1.Column)(),
+    (0, typeorm_1.Column)({ type: 'enum', enum: LessonType }),
     __metadata("design:type", String)
 ], Lesson.prototype, "type", void 0);
 __decorate([
@@ -42,7 +49,7 @@ __decorate([
     __metadata("design:type", Number)
 ], Lesson.prototype, "requiredScore", void 0);
 __decorate([
-    (0, typeorm_1.OneToMany)(() => question_entity_1.Question, (question) => question.lesson, { cascade: true }),
+    (0, typeorm_1.OneToMany)(() => question_entity_1.Question, (question) => question.lesson, { cascade: true, eager: true }),
     __metadata("design:type", Array)
 ], Lesson.prototype, "questions", void 0);
 exports.Lesson = Lesson = __decorate([

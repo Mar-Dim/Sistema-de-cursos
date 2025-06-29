@@ -23,7 +23,7 @@ let UsersController = class UsersController {
         this.usersService = usersService;
     }
     getProfile(req) {
-        return req.user;
+        return { email: req.user.email, username: req.user.username };
     }
     create(createUserDto) {
         return this.usersService.create(createUserDto);
