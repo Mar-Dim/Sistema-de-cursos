@@ -1,8 +1,3 @@
-/* home.css */
-
-/* --- Fuentes y Variables Globales (Reutilizadas del CSS de login) --- */
-/* Es buena práctica tener estas variables en un archivo global, 
-   pero las incluyo aquí para que este componente funcione de forma autónoma. */
 @import url('https://fonts.googleapis.com/css2?family=Nunito:wght@700;800&display=swap');
 
 :root {
@@ -154,46 +149,6 @@ body {
   box-shadow: 0 8px 0 0 #b7b7b7;
 }
 
-/* --- Estilos para el Modal (Básicos) --- */
-/* Estos estilos aseguran que el modal se vea bien con el resto del diseño */
-.modal-overlay {
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  background-color: rgba(0, 0, 0, 0.6);
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  z-index: 1000;
-  backdrop-filter: blur(5px);
-}
-
-.modal-content {
-  background: var(--white);
-  padding: 2rem;
-  border-radius: var(--border-radius-card);
-  box-shadow: 0 10px 25px rgba(0,0,0,0.2);
-  width: 90%;
-  max-width: 600px;
-  position: relative;
-}
-
-.modal-close-button {
-  position: absolute;
-  top: 1rem;
-  right: 1rem;
-  background: none;
-  border: none;
-  font-size: 1.5rem;
-  cursor: pointer;
-  color: var(--text-secondary);
-}
-
-.modal-close-button:hover {
-  color: var(--text-primary);
-}
 
 
 /* ========== RESPONSIVE DESIGN ========== */
@@ -259,4 +214,41 @@ body {
     height: 40px;
     width: 5px;
   }
+}
+/* home.css */
+
+/* ... tus estilos existentes ... */
+
+/* --- Estilos para Nodos de Lección con Estado --- */
+.lesson-node.completed {
+  background-color: #22c55e; /* Verde */
+  box-shadow: 0 8px 0 0 #16a34a;
+}
+.lesson-node.completed:hover {
+  box-shadow: 0 12px 0 0 #16a34a;
+}
+.lesson-node.completed:active {
+  box-shadow: 0 4px 0 0 #16a34a;
+}
+
+.lesson-node.failed {
+  background-color: #ef4444; /* Rojo */
+  box-shadow: 0 8px 0 0 #dc2626;
+}
+.lesson-node.failed:hover {
+  box-shadow: 0 12px 0 0 #dc2626;
+}
+.lesson-node.failed:active {
+  box-shadow: 0 4px 0 0 #dc2626;
+}
+
+/* Estilo para mostrar la puntuación */
+.lesson-score {
+  display: block;
+  font-size: 0.8rem;
+  margin-top: 5px;
+  font-weight: bold;
+  background: rgba(0,0,0,0.2);
+  padding: 2px 6px;
+  border-radius: 8px;
 }

@@ -45,7 +45,7 @@ let AuthService = class AuthService {
         if (!isPasswordValid) {
             throw new common_1.UnauthorizedException('Credenciales incorrectas');
         }
-        const payload = { sub: user.id, email: user.email };
+        const payload = { sub: user.id, email: user.email, username: user.username };
         const token = await this.jwtService.signAsync(payload);
         return { access_token: token, user };
     }
