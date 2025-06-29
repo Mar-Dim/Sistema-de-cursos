@@ -11,13 +11,14 @@ import { UserAnswerModule } from './user-answer/user-answer.module';
   imports: [
     TypeOrmModule.forRoot({
       type: 'postgres',
-      host: 'localhost',
-      port: 5432,
-      username: 'admin',
-      password: 'curso_ingles',
-      database: 'curso_ingles',
+      host: 'maglev.proxy.rlwy.net',
+      port: 40528,
+      username: 'postgres',
+      password: 'EthIpFLBtCwrykCBJOQKWLafsiRMppxr',
+      database: 'railway',
       entities: [__dirname + '/**/*.entity{.ts,.js}'],
       synchronize: true,
+      ssl: { rejectUnauthorized: false }, // Importante para Railway
     }),
     UsersModule,
     AuthModule,
@@ -28,4 +29,3 @@ import { UserAnswerModule } from './user-answer/user-answer.module';
   ],
 })
 export class AppModule {}
-
