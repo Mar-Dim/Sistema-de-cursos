@@ -26,6 +26,9 @@ export class Lesson {
 @Column({ nullable: true })
   requiredScore: number;
 
+  @Column({ type: 'text', nullable: true }) // 'text' para contenido largo, nullable para quizzes
+  content: string;
+
   @OneToMany(() => Question, (question) => question.lesson, { cascade: true })
   questions: Question[];
 

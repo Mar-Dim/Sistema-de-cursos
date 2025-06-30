@@ -38,11 +38,11 @@ export class SeederService {
     try {
       // Orden de borrado: de las tablas más dependientes a las menos dependientes.
       // Los nombres deben coincidir con los de tu base de datos (generalmente minúsculas_con_guion_bajo).
-      await queryRunner.query('DELETE FROM "user_answer"');
-      await queryRunner.query('DELETE FROM "progress"');
-      await queryRunner.query('DELETE FROM "lesson_unlock_condition"');
-      await queryRunner.query('DELETE FROM "question"');
-      await queryRunner.query('DELETE FROM "lesson"');
+      await queryRunner.query('TRUNCATE "user_answer" RESTART IDENTITY CASCADE');
+      await queryRunner.query('TRUNCATE "progress" RESTART IDENTITY CASCADE');
+      await queryRunner.query('TRUNCATE "lesson_unlock_condition" RESTART IDENTITY CASCADE');
+      await queryRunner.query('TRUNCATE "question" RESTART IDENTITY CASCADE');
+      await queryRunner.query('TRUNCATE "lesson" RESTART IDENTITY CASCADE');
 
       this.logger.log('Database cleaned successfully.');
       await queryRunner.commitTransaction();
@@ -72,6 +72,7 @@ export class SeederService {
         lesson.title = data.name;
         lesson.type = data.type.toLowerCase() as LessonType;
         lesson.requiredScore = data.requiredScore;
+        lesson.content = data.content;
 
         if (data.questions) {
           lesson.questions = data.questions.map(qData => {
