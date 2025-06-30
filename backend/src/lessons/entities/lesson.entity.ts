@@ -24,9 +24,10 @@ export class Lesson {
   @Column()
   order: number;
 
-  @Column()
+  @Column({default:  0})
   requiredScore: number;
 
   @OneToMany(() => Question, (question) => question.lesson, { cascade: true, eager: true })
   questions: Question[];
+
 }
