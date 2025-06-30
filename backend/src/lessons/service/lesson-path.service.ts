@@ -1,22 +1,14 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
+import { Lesson } from '../entities/lesson.entity';
 import { Progress } from 'src/progress/entities/progress.entity';
 import { User } from 'src/users/entities/user.entity';
-import { Lesson } from '../entities/lesson.entity';
-import { DecisionContext } from '../desicion-tree/decision-types';
-import { buildUnlockTree } from '../desicion-tree/decision-tree';
-
-
-export type LessonStatus = 'locked' | 'available' | 'completed';
-
+import { LessonUnlockCondition, UnlockType } from '../entities/lesson-unlock-condition.entity';
+import { LessonPathResponseDto } from '../dto/lesson-path-response.dto';
 export interface LessonWithStatus {
-  id: number;
-  title: string;
-  order: number;
-  requiredScore: number;
-  status: LessonStatus;
-  progress?: number;
+  lesson: Lesson;
+  status: 'locked' | 'available' | 'completed';
 }
 
 @Injectable()
@@ -26,45 +18,81 @@ export class LessonPathService {
     private readonly lessonRepo: Repository<Lesson>,
     @InjectRepository(Progress)
     private readonly progressRepo: Repository<Progress>,
+    @InjectRepository(LessonUnlockCondition)
+    private readonly unlockConditionRepo: Repository<LessonUnlockCondition>,
   ) {}
 
-  async getLessonsWithStatus(user: User): Promise<LessonWithStatus[]> {
-    const lessons = await this.lessonRepo.find({ order: { order: 'ASC' } });
-    const progresses = await this.progressRepo.find({
-      where: { user: { id: user.id } },
-      relations: ['lesson'],
+async getLessonsWithStatus(user: User): Promise<LessonPathResponseDto[]> {
+    const allLessons = await this.lessonRepo.find({
+      relations: { prerequisites: { sourceLesson: true } },
+      order: { order: 'ASC' },
     });
+    const userProgress = await this.progressRepo.find({
+      where: { user: { id: user.id } },
+      relations: { lesson: true },
+    });
+    const progressMap = new Map(userProgress.map(p => [p.lesson.id, p]));
 
-    return lessons.map((lesson, idx) => {
-      const progress = progresses.find(p => p.lesson.id === lesson.id);
-
-      // 1. Si está completada con score suficiente
-      if (progress && progress.completed && progress.score >= lesson.requiredScore) {
-        return { ...lesson, status: 'completed' as LessonStatus, progress: progress.score };
-      }
-
-      // 2. Primera lección siempre disponible
-      if (idx === 0) {
-        return { ...lesson, status: 'available' as LessonStatus, progress: progress?.score ?? 0 };
-      }
-
-     
-      const prevLesson = lessons[idx - 1];
-      const prevProgress = progresses.find(p => p.lesson.id === prevLesson.id);
-
-      const context: DecisionContext = {
-        completed: !!prevProgress?.completed,
-        score: prevProgress?.score ?? 0,
+    
+    const lessonsWithStatus: LessonPathResponseDto[] = allLessons.map(lesson => {
+      const progressForThisLesson = progressMap.get(lesson.id);
+ const lessonNodeDto = {
+        id: lesson.id,
+        title: lesson.title,
+        type: lesson.type,
+        order: lesson.order,
       };
 
-   
-      const tree = buildUnlockTree(prevLesson.requiredScore, lesson.id);
-      const unlockedLessonId = tree.evaluate(context);
-
-      if (unlockedLessonId === lesson.id) {
-        return { ...lesson, status: 'available' as LessonStatus, progress: progress?.score ?? 0 };
+      if (progressForThisLesson && progressForThisLesson.completed) {
+        return {
+          lesson: lessonNodeDto,
+          status: 'completed',
+          score: progressForThisLesson.score, // Incluimos el score
+        };
       }
-      return { ...lesson, status: 'locked' as LessonStatus, progress: progress?.score ?? 0 };
+
+      const isAvailable = this.isLessonAvailable(lesson, progressMap);
+      if (isAvailable) {
+        return {
+          lesson: lessonNodeDto,
+          status: 'available',
+        };
+      }
+
+      return {
+        lesson: lessonNodeDto,
+        status: 'locked',
+      };
+    });
+
+    return lessonsWithStatus;
+  }
+  
+
+  private isLessonAvailable(lesson: Lesson, progressMap: Map<number, Progress>): boolean {
+    if (!lesson.prerequisites || lesson.prerequisites.length === 0) {
+      return true;
+    }
+
+    return lesson.prerequisites.every(condition => {
+      const sourceLesson = condition.sourceLesson;
+       const progressOnSource = progressMap.get(sourceLesson.id);
+      if (!progressOnSource || !progressOnSource.completed) {
+        return false;
+      }
+      
+       switch (condition.unlockType) {
+        case UnlockType.ON_COMPLETE:
+          return true; 
+        
+        case UnlockType.ON_SUCCESS:
+          return progressOnSource.score >= sourceLesson.requiredScore;
+
+        case UnlockType.ON_FAIL:
+          return progressOnSource.score < sourceLesson.requiredScore;
+
+        default:
+          return false; }
     });
   }
 }

@@ -6,9 +6,10 @@ import { LessonsService } from './lessons.service';
 import { LessonsController } from './lessons.controller';
 import { LessonPathService} from './service/lesson-path.service';
 import { Progress } from 'src/progress/entities/progress.entity';
-
+import { LessonUnlockCondition } from './entities/lesson-unlock-condition.entity';
+import { User } from 'src/users/entities/user.entity';
 @Module({
-  imports: [TypeOrmModule.forFeature([Lesson, Question, Progress])],
+  imports: [TypeOrmModule.forFeature([User, Lesson, Question, Progress, LessonUnlockCondition])],
   controllers: [LessonsController],
   providers: [LessonsService, LessonPathService],
 })

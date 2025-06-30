@@ -1,20 +1,23 @@
-import { IsBoolean, IsNotEmpty, IsNumber, Min } from "class-validator";
+import { IsInt, IsArray, IsNotEmpty, ValidateNested, IsNumber } from 'class-validator';
+import { Type } from 'class-transformer';
+
+class AnswerDto {
+  @IsInt()
+  @IsNotEmpty()
+  questionId: number;
+
+  @IsInt()
+  @IsNotEmpty()
+  selectedOptionIndex: number;
+}
 
 export class CreateProgressDto {
+  @IsInt()
+  @IsNotEmpty()
+  lessonId: number;
 
-    @IsNotEmpty()
-    @IsNumber()
-    user_id:number;
-
-    @IsNotEmpty()
-    @IsNumber()
-    lesson_id:number;
-
-    @IsNumber()
-    @Min(0)
-    score:number;
-
-    @IsNotEmpty()
-    @IsBoolean()
-    completed:boolean;
+  @IsArray()
+  @ValidateNested({ each: true })
+  @Type(() => AnswerDto)
+  answers: AnswerDto[]; 
 }

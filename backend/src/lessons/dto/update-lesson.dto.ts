@@ -9,7 +9,7 @@ export class UpdateLessonDto {
     title: string;
 
     @IsOptional()
-    @IsEnum(LessonType, { message: 'Type solo puede ser de tipo vocabulario, gramtica, listening o practica' })
+    @IsEnum(LessonType, { message: 'Type solo puede ser de tipo lesson , quiz, case_study, remediation o evaluation' })
     type: LessonType;
 
     @IsOptional()

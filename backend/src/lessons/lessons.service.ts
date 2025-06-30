@@ -7,7 +7,7 @@ import { Repository } from 'typeorm';
 
 import { User } from 'src/users/entities/user.entity';
 import { LessonPathService, LessonWithStatus } from './service/lesson-path.service';
-
+import { LessonPathResponseDto } from './dto/lesson-path-response.dto';
 @Injectable()
 export class LessonsService {
 
@@ -17,20 +17,9 @@ export class LessonsService {
    private readonly lessonPathService: LessonPathService,
   ){}
 
-  async create(createLessonDto: CreateLessonDto) {
-    const {questions, ...rest} = createLessonDto;
+  
 
-    const lesson = await this.lessonRepo.create({
-      ...rest,
-      questions: questions?.map(q => ({
-        ... q,
-      })),
-    });
-
-    return this.lessonRepo.save(lesson);
-  }
-
-  async getRecommendedLesson(user: User): Promise<LessonWithStatus[]> {
+async getLessonsPathForUser(user: User): Promise<LessonPathResponseDto[]> {
     return this.lessonPathService.getLessonsWithStatus(user);
   }
 
@@ -38,25 +27,52 @@ export class LessonsService {
     return this.lessonRepo.find();
   }
 
-  async findOne(id: number): Promise<Lesson> {
-    const lesson = await this.lessonRepo.findOneBy({ id });
-    if(!lesson) throw new NotFoundException(`No se a encontrado ninguna leccion con el id ${id}`);
+    async findOne(id: number): Promise<Lesson> {
+    const lesson = await this.lessonRepo.findOne({
+      where: { id },
+      // Esta línea le dice a TypeORM: "Cuando busques esta lección,
+      // haz un JOIN y tráeme también todas sus preguntas asociadas".
+      relations: ['questions'], 
+    });
+
+    if(!lesson) {
+      throw new NotFoundException(`No se ha encontrado ninguna lección con el id ${id}`);
+    }
     return lesson;
+  }
+  async create(createLessonDto: CreateLessonDto) {
+    const { questions, ...rest } = createLessonDto;
+    const lesson = this.lessonRepo.create({
+      ...rest,
+      questions: questions,
+    });
+    return this.lessonRepo.save(lesson);
   }
 
   async update(id: number, updateLessonDto: UpdateLessonDto): Promise<Lesson> {
-    const lesson = await this.lessonRepo.findOneBy({ id });
-
+    const lesson = await this.lessonRepo.preload({ id, ...updateLessonDto });
     if (!lesson) {
       throw new NotFoundException(`Lección con id ${id} no encontrada`);
     }
-
-    Object.assign(lesson, updateLessonDto);
     return this.lessonRepo.save(lesson);
   }
 
   async remove(id: number) {
-    const resultado = await this.lessonRepo.delete(id);
-    if(resultado.affected === 0) throw new NotFoundException(`Leccion con id ${id} no encotrada`);
+    const result = await this.lessonRepo.delete(id);
+    if(result.affected === 0) throw new NotFoundException(`Leccion con id ${id} no encontrada`);
   }
+
+   async findOneWithDetails(id: number): Promise<Lesson> {
+    const lesson = await this.lessonRepo.findOne({
+      where: { id },
+      // La clave está aquí: cargar las preguntas relacionadas
+      relations: ['questions'], 
+    });
+    if (!lesson) {
+      throw new NotFoundException(`Lección con id ${id} no encontrada`);
+    }
+    return lesson;
+  }
+
+
 }
