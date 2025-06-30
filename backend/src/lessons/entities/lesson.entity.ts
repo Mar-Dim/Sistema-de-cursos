@@ -1,5 +1,6 @@
 import { Question } from 'src/question/entities/question.entity';
 import { Entity, PrimaryGeneratedColumn, Column, OneToMany } from 'typeorm';
+import { LessonUnlockCondition } from './lesson-unlock-condition.entity';
 
 export enum LessonType {
   LESSON = 'lesson',
@@ -9,7 +10,6 @@ export enum LessonType {
   EVALUATION = 'evaluation',
 }
 
-
 @Entity()
 export class Lesson {
   @PrimaryGeneratedColumn()
@@ -18,15 +18,20 @@ export class Lesson {
   @Column()
   title: string;
 
-  @Column({ type: 'enum', enum: LessonType, default:LessonType.LESSON })
+  @Column({ type: 'enum', enum: LessonType, default: LessonType.LESSON })
   type: LessonType;
-
-  @Column()
+@Column({ unique: true })
   order: number;
 
-  @Column()
+@Column({ nullable: true })
   requiredScore: number;
 
-  @OneToMany(() => Question, (question) => question.lesson, { cascade: true, eager: true })
+  @OneToMany(() => Question, (question) => question.lesson, { cascade: true })
   questions: Question[];
+
+  @OneToMany(() => LessonUnlockCondition, (condition) => condition.sourceLesson, { cascade: true })
+  unlocks: LessonUnlockCondition[];
+
+  @OneToMany(() => LessonUnlockCondition, (condition) => condition.targetLesson)
+  prerequisites: LessonUnlockCondition[];
 }

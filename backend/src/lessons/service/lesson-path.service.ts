@@ -1,22 +1,15 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
+import { Lesson } from '../entities/lesson.entity';
 import { Progress } from 'src/progress/entities/progress.entity';
 import { User } from 'src/users/entities/user.entity';
-import { Lesson } from '../entities/lesson.entity';
-import { DecisionContext } from '../desicion-tree/decision-types';
-import { buildUnlockTree } from '../desicion-tree/decision-tree';
+import { LessonUnlockCondition, UnlockType } from '../entities/lesson-unlock-condition.entity';
 
-
-export type LessonStatus = 'locked' | 'available' | 'completed';
-
+// Tu interfaz, que es muy buena.
 export interface LessonWithStatus {
-  id: number;
-  title: string;
-  order: number;
-  requiredScore: number;
-  status: LessonStatus;
-  progress?: number;
+  lesson: Lesson;
+  status: 'locked' | 'available' | 'completed';
 }
 
 @Injectable()
@@ -26,45 +19,74 @@ export class LessonPathService {
     private readonly lessonRepo: Repository<Lesson>,
     @InjectRepository(Progress)
     private readonly progressRepo: Repository<Progress>,
+    // Inyectamos el repositorio de las condiciones también
+    @InjectRepository(LessonUnlockCondition)
+    private readonly unlockConditionRepo: Repository<LessonUnlockCondition>,
   ) {}
 
   async getLessonsWithStatus(user: User): Promise<LessonWithStatus[]> {
-    const lessons = await this.lessonRepo.find({ order: { order: 'ASC' } });
-    const progresses = await this.progressRepo.find({
-      where: { user: { id: user.id } },
-      relations: ['lesson'],
+    const allLessons = await this.lessonRepo.find({
+      relations: {
+        prerequisites: {
+          sourceLesson: true, // Carga la lección que actúa como prerrequisito
+        },
+      },
+      order: {
+        order: 'ASC', // Ordenamos para una visualización consistente
+      },
     });
 
-    return lessons.map((lesson, idx) => {
-      const progress = progresses.find(p => p.lesson.id === lesson.id);
+    // Obtenemos todo el progreso de este usuario.
+    const userProgress = await this.progressRepo.find({
+      where: { user: { id: user.id } },
+      relations: {
+        lesson: true, // Cargamos la lección asociada a cada progreso
+      },
+    });
+   const progressMap = new Map(userProgress.map(p => [p.lesson.id, p]));
+   const lessonsWithStatus: LessonWithStatus[] = allLessons.map(lesson => {
+       const progressForThisLesson = progressMap.get(lesson.id);
 
-      // 1. Si está completada con score suficiente
-      if (progress && progress.completed && progress.score >= lesson.requiredScore) {
-        return { ...lesson, status: 'completed' as LessonStatus, progress: progress.score };
+        if (progressForThisLesson && progressForThisLesson.completed) {
+        return { lesson, status: 'completed' };
+      }
+       const isAvailable = this.isLessonAvailable(lesson, progressMap);
+
+      if (isAvailable) {
+        return { lesson, status: 'available' };
       }
 
-      // 2. Primera lección siempre disponible
-      if (idx === 0) {
-        return { ...lesson, status: 'available' as LessonStatus, progress: progress?.score ?? 0 };
+       return { lesson, status: 'locked' };
+    });
+
+    return lessonsWithStatus;
+  }
+
+  private isLessonAvailable(lesson: Lesson, progressMap: Map<number, Progress>): boolean {
+    // Caso base: Si no tiene prerrequisitos, está disponible.
+    if (!lesson.prerequisites || lesson.prerequisites.length === 0) {
+      return true;
+    }
+
+    return lesson.prerequisites.every(condition => {
+      const sourceLesson = condition.sourceLesson;
+       const progressOnSource = progressMap.get(sourceLesson.id);
+      if (!progressOnSource || !progressOnSource.completed) {
+        return false;
       }
+      
+       switch (condition.unlockType) {
+        case UnlockType.ON_COMPLETE:
+          return true; // Ya verificamos que está 'completed'.
+        
+        case UnlockType.ON_SUCCESS:
+          return progressOnSource.score >= sourceLesson.requiredScore;
 
-     
-      const prevLesson = lessons[idx - 1];
-      const prevProgress = progresses.find(p => p.lesson.id === prevLesson.id);
+        case UnlockType.ON_FAIL:
+          return progressOnSource.score < sourceLesson.requiredScore;
 
-      const context: DecisionContext = {
-        completed: !!prevProgress?.completed,
-        score: prevProgress?.score ?? 0,
-      };
-
-   
-      const tree = buildUnlockTree(prevLesson.requiredScore, lesson.id);
-      const unlockedLessonId = tree.evaluate(context);
-
-      if (unlockedLessonId === lesson.id) {
-        return { ...lesson, status: 'available' as LessonStatus, progress: progress?.score ?? 0 };
-      }
-      return { ...lesson, status: 'locked' as LessonStatus, progress: progress?.score ?? 0 };
+        default:
+          return false; }
     });
   }
 }
