@@ -20,9 +20,9 @@ export class LessonPathService {
     private readonly progressRepo: Repository<Progress>,
     @InjectRepository(LessonUnlockCondition)
     private readonly unlockConditionRepo: Repository<LessonUnlockCondition>,
-  ) {}
+  ) { }
 
-async getLessonsWithStatus(user: User): Promise<LessonPathResponseDto[]> {
+  async getLessonsWithStatus(user: User): Promise<LessonPathResponseDto[]> {
     const allLessons = await this.lessonRepo.find({
       relations: { prerequisites: { sourceLesson: true } },
       order: { order: 'ASC' },
@@ -33,10 +33,10 @@ async getLessonsWithStatus(user: User): Promise<LessonPathResponseDto[]> {
     });
     const progressMap = new Map(userProgress.map(p => [p.lesson.id, p]));
 
-    
+
     const lessonsWithStatus: LessonPathResponseDto[] = allLessons.map(lesson => {
       const progressForThisLesson = progressMap.get(lesson.id);
- const lessonNodeDto = {
+      const lessonNodeDto = {
         id: lesson.id,
         title: lesson.title,
         type: lesson.type,
@@ -52,6 +52,7 @@ async getLessonsWithStatus(user: User): Promise<LessonPathResponseDto[]> {
       }
 
       const isAvailable = this.isLessonAvailable(lesson, progressMap);
+      console.log(isAvailable)
       if (isAvailable) {
         return {
           lesson: lessonNodeDto,
@@ -67,32 +68,30 @@ async getLessonsWithStatus(user: User): Promise<LessonPathResponseDto[]> {
 
     return lessonsWithStatus;
   }
-  
+
 
   private isLessonAvailable(lesson: Lesson, progressMap: Map<number, Progress>): boolean {
     if (!lesson.prerequisites || lesson.prerequisites.length === 0) {
       return true;
     }
 
-    return lesson.prerequisites.every(condition => {
+    return lesson.prerequisites.some(condition => {
       const sourceLesson = condition.sourceLesson;
-       const progressOnSource = progressMap.get(sourceLesson.id);
+      const progressOnSource = progressMap.get(sourceLesson.id);
       if (!progressOnSource || !progressOnSource.completed) {
         return false;
       }
-      
-       switch (condition.unlockType) {
+
+      switch (condition.unlockType) {
         case UnlockType.ON_COMPLETE:
-          return true; 
-        
+          return true;
         case UnlockType.ON_SUCCESS:
           return progressOnSource.score >= sourceLesson.requiredScore;
-
         case UnlockType.ON_FAIL:
           return progressOnSource.score < sourceLesson.requiredScore;
-
         default:
-          return false; }
+          return false;
+      }
     });
   }
 }

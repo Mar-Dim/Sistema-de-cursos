@@ -31,13 +31,13 @@ export class Lesson {
   @Column({ type: 'text', nullable: true }) 
   content: string;
 
-  @OneToMany(() => Question, (question) => question.lesson, { cascade: true })
+  @OneToMany(() => Question, (question) => question.lesson, { cascade: true, eager: true })
   questions: Question[];
 
-  @OneToMany(() => LessonUnlockCondition, (condition) => condition.sourceLesson, { cascade: true })
+  @OneToMany(() => LessonUnlockCondition, (condition) => condition.sourceLesson, { cascade: true, eager: true })
   unlocks: LessonUnlockCondition[];
 
-  @OneToMany(() => LessonUnlockCondition, (condition) => condition.targetLesson)
+  @OneToMany(() => LessonUnlockCondition, (condition) => condition.targetLesson, {eager: true})
   prerequisites: LessonUnlockCondition[];
 }
 
