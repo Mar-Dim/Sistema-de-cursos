@@ -249,6 +249,7 @@ body {
 .lesson-node.completed {
   background-color: #22c55e; /* Verde */
   box-shadow: 0 8px 0 0 #16a34a;
+  flex-direction: column;
 }
 .lesson-node.completed:hover {
   box-shadow: 0 12px 0 0 #16a34a;
