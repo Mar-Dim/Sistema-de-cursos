@@ -6,6 +6,12 @@ import Sidebar from '../components/Sidebar';
 import { getProfile } from '../services/authService';
 import { getLearningPath, submitProgress, getLessonDetails } from '../services/courseService';
 
+// ========================================================================
+// UMBRAL DE APROBACIÓN FIJO
+// Todas las lecciones completadas con un score menor a este valor serán rojas.
+const PASSING_SCORE = 75;
+// ========================================================================
+
 export default function HomePage() {
   const navigate = useNavigate();
   const [username, setUsername] = useState('');
@@ -39,13 +45,36 @@ export default function HomePage() {
     }
   }, [navigate, fetchLearningPath]);
 
+  // FUNCIÓN CLAVE PARA DETERMINAR EL COLOR (ROJO/VERDE)
+  const getLessonStatusClass = (lws) => {
+    const { status, score } = lws;
+
+    if (status === 'completed') {
+      // Comparamos el score del usuario con nuestro umbral fijo.
+      // Nos aseguramos de que 'score' sea un número.
+      if (typeof score === 'number') {
+        return score >= PASSING_SCORE ? 'completed' : 'failed';
+      }
+      // Si no hay score, la marcamos como completada por defecto.
+      return 'completed';
+    }
+    
+    // Para cualquier otro estado ('locked', 'available', etc.), devolvemos el estado tal cual.
+    return status;
+  };
+  
+  // STATS - Actualizado para usar el umbral fijo
   const stats = useMemo(() => {
     if (!learningPath.length) return { total: 0, completed: 0, percentage: 0 };
     const completableLessons = learningPath.filter(lws => lws.lesson.type !== 'remediation');
     const totalLessons = completableLessons.length;
-    const completedCount = completableLessons.filter(lws => lws.status === 'completed').length;
-    const progressPercentage = totalLessons > 0 ? Math.round((completedCount / totalLessons) * 100) : 0;
-    return { total: totalLessons, completed: completedCount, percentage: progressPercentage };
+    
+    const approvedCount = completableLessons.filter(lws => 
+      lws.status === 'completed' && lws.score >= PASSING_SCORE
+    ).length;
+
+    const progressPercentage = totalLessons > 0 ? Math.round((approvedCount / totalLessons) * 100) : 0;
+    return { total: totalLessons, completed: approvedCount, percentage: progressPercentage };
   }, [learningPath]);
 
   const handleLogout = () => {
@@ -111,11 +140,12 @@ export default function HomePage() {
           {learningPath.map((lws, index, arr) => (
             <div key={lws.lesson.id} className="lesson-wrapper">
               <button
-                className={`lesson-node ${lws.status}`}
+                className={`lesson-node ${getLessonStatusClass(lws)}`}
                 onClick={() => handleLessonClick(lws)}
                 disabled={lws.status === 'locked' || isSubmitting || isLoadingModal}
               >
                 {lws.lesson.title}
+                {/* Mostramos el score solo si la lección está completada */}
                 {lws.status === 'completed' && typeof lws.score === 'number' &&
                   <span className="lesson-score">{lws.score}%</span>}
               </button>
